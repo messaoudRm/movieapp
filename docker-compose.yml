@@ -1,0 +1,54 @@
+version: "3.9"
+
+services:
+  db:
+    image: mariadb:11.8.2
+    container_name: movieapp-db
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_DATABASE: DB
+      MARIADB_ALLOW_LOCAL_INFILE: 1
+    ports:
+      - "3308:3306"
+    volumes:
+      - ./init:/docker-entrypoint-initdb.d
+      - movieapp-db-data:/var/lib/mysql
+
+  adminer:
+    image: adminer
+    container_name: movieapp-adminer
+    restart: always
+    ports:
+      - "8082:8080"
+
+  backend:
+    build:
+      context: https://github.com/tonuser/movieapp-backend.git#infraRefactor
+      dockerfile: Dockerfile
+    container_name: movieapp-backend
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mariadb://db:3306/DB
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: https://github.com/tonuser/movieapp-frontend.git#main
+      dockerfile: Dockerfile
+      args:
+        build_env: production
+    container_name: movieapp-frontend
+    restart: always
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+
+volumes:
+  movieapp-db-data:
