@@ -72,10 +72,10 @@ CREATE TABLE watch_later (
     FOREIGN KEY (movie_id) REFERENCES movies(id)
 );
 
-
+-- Utilisateurs de test
 INSERT INTO users (username, password, email, role)
 VALUES
-  ('superadmin', '$2a$10$3XgD1TFBmQrJqvOTFxe6z.FkMG7/9xwtVAiiSAp4IJf/iuwDVjOyK', 'superadmin@example.com', 'SUPER_ADMIN'),
-  ('adminuser', '$2a$10$3XgD1TFBmQrJqvOTFxe6z.FkMG7/9xwtVAiiSAp4IJf/iuwDVjOyK', 'admin@example.com', 'ADMIN'),
-  ('normaluser', '$2a$10$3XgD1TFBmQrJqvOTFxe6z.FkMG7/9xwtVAiiSAp4IJf/iuwDVjOyK', 'user@example.com', 'USER');
+  ('superadmin', '$2a$10$ehdrvX28KIgRo4HWt09eguvXEw5MRIk5J2PDZDUnF5PzUCAnLB5bq', 'superadmin@example.com', 'SUPER_ADMIN'),
+  ('admin', '$2a$10$aQKGUzQa2KjPC2OlK0LQGeqpBvf0Oe4Tj75DecyaG3a3HncsCIYyC', 'admin@example.com', 'ADMIN'),
+  ('user', '$2a$10$D9aLAPpeR8TvwoQ3swZME.wdQPKXq2JGefUzVzn6VfuL.XC3GMGM2', 'user@example.com', 'USER');
 
