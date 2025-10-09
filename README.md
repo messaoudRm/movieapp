@@ -2,6 +2,8 @@
 
 MovieApp projet d’orchestration qui regroupe l’ensemble des services de l’application (frontend, backend)
 
+![img.png](img.png)
+
 - **Frontend (movieapp-ui)** : Angular + Angular Material, déployé avec Nginx.
   - [doc frontend](https://github.com/messaoudRm/movieapp-ui/blob/main/README.md)
 - **Backend (movieapp-api)** : Spring Boot, exposant les services REST.
