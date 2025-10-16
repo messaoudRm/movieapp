@@ -1,4 +1,3 @@
-version: "3.9"
 
 services:
   db:
@@ -14,6 +13,8 @@ services:
     volumes:
       - ./init:/docker-entrypoint-initdb.d
       - movieapp-db-data:/var/lib/mysql
+    networks:
+      - movieapp-network
 
   adminer:
     image: adminer
@@ -21,6 +22,8 @@ services:
     restart: always
     ports:
       - "8082:8080"
+    networks:
+      - movieapp-network
 
   backend:
     build:
@@ -36,6 +39,8 @@ services:
       SPRING_DATASOURCE_PASSWORD: root
     depends_on:
       - db
+    networks:
+      - movieapp-network
 
   frontend:
     build:
@@ -49,6 +54,12 @@ services:
       - "4200:80"
     depends_on:
       - backend
+    networks:
+      - movieapp-network
 
 volumes:
   movieapp-db-data:
+
+networks:
+  movieapp-network:
+    external: true
