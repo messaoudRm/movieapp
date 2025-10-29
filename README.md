@@ -8,76 +8,83 @@ MovieApp projet d’orchestration qui regroupe l’ensemble des services de l’
   - **Base de données** : MariaDB, initialisée automatiquement.
   - **Adminer** : outil de gestion de la base accessible via navigateur.
 - **Monitoring (movieapp-monitoring)**: stack de monitoring basée sur Prometheus et Grafana : [doc monitoring](https://github.com/messaoudRm/movieapp-monitoring/blob/main/README.md)
-
+- **Sentiment Analyzer (sentiment-analyzer)** : microservice FastAPI dédié à l’analyse de sentiment des commentaires : [doc Sentiment-Analyzer](https://github.com/messaoudRm/sentiment-analyzer/blob/main/README.md)
 
 ---
 ## Architecture :
 ```mermaid
 flowchart TB
-%% ==== SECTION CLIENT ====
-    subgraph Client["Client"]
-        client["Navigateur, OpenAPI (Swagger)"]
-    end
+
+%% ==== SECTION FRONTEND ====
+  subgraph Nginx["Frontend Services"]
+    client["Angular (Nginx container)"]
+  end
 
 %% ==== SECTION BACKEND ====
-    subgraph Backend["Backend Services"]
-        direction TB
+  subgraph Backend["Backend Services"]
+    direction TB
 
-    %% --- Application principale ---
-        subgraph SpringBootApp["Spring Boot App (container)"]
-            direction TB
-
-            subgraph SecurityFilter["jwtFilter"]
-                jwtFilter["JwtAuthenticationFilter"]
-            end
-
-            subgraph ControllerLayer["Controller"]
-                controller["@RestController"]
-            end
-
-            subgraph ServiceLayer["Service"]
-                service["@Service"]
-            end
-        end
-
-    %% --- Base de données et outils ---
-        db["MariaDB (container)"]
-        adminer["Adminer UI (container)"]
-
-    %% --- Monitoring ---
-        prometheus["Prometheus (container)"]
-
-        subgraph Dashboard["Dashboards et visualisation"]
-            grafana["Grafana (container)"]
-        end
+  %% --- Application principale ---
+    subgraph SpringBootApp["Spring Boot App (container)"]
+      direction TB
     end
+
+  %% --- Microservice FastAPI ---
+    subgraph FastAPI["FastAPI Microservice (container)"]
+      direction TB
+    end
+
+  %% --- Container BD ---
+    subgraph Database["MariaDB (container)"]
+      direction TB
+    end
+
+  end
+
+
+%% ==== SECTION MANAGMENT ====
+  subgraph Adminer["Management Services"]
+    direction TB
+    adminer["Adminer UI (container)"]
+  end
+
+
+%% ==== SECTION MONITORING ====
+  subgraph Monitoring["Monitoring Services"]
+    direction TB
+    prometheus["Prometheus (container)"]
+    grafana["Grafana (container)"]
+  end
+
 
 %% ==== SECTION STORAGE ====
-    subgraph Storage["Persistent Storage"]
-        vol1["Data Volume (MariaDB)"]
-        vol2["Monitoring Volume (Prometheus / Grafana)"]
-    end
+  subgraph Storage["Persistent Storage"]
+    vol1["Data Volume (MariaDB)"]
+    vol2["Monitoring Volume (Prometheus / Grafana)"]
+  end
+
 
 %% ==== FLUX PRINCIPAL ====
-    client -->|"Requête HTTP avec Authorization: Bearer <token_jwt>"| jwtFilter
-    jwtFilter -->|"Token valide"| controller
-    jwtFilter -.->|"Token invalide (401)"| client
+  Nginx <-->|"HTTP"| SpringBootApp
+  SpringBootApp <-->|"JDBC / JPA"| Database
+  adminer <-->|"DB Admin Access"| Database
+  Database --> vol1
 
-    controller --> service
-    service <-->|"JDBC / JPA"| db
-    adminer <-->|"TCP/IP"| db
-    db --> vol1
+
+%% ==== INTÉGRATION FASTAPI ====
+  SpringBootApp <-->|"HTTP"| FastAPI
+
 
 %% ==== FLUX MONITORING ====
-    SpringBootApp -->|"Expose métriques"| prometheus
-    prometheus -->|"Scrape et stocke les métriques"| vol2
-    grafana -->|"Interroge Prometheus"| prometheus
+  SpringBootApp -->|"Expose métriques"| prometheus
+  prometheus -->|"Scrape et stocke les métriques"| vol2
+  grafana -->|"Interroge Prometheus"| prometheus
 
 ```
 
 ---
 
-## 🚀 Lancement rapide
+## Lancement rapide
 
 Assurez-vous d’avoir **Docker** installé, puis :
 
@@ -110,7 +117,7 @@ Relancer les conteneurs déjà créés :
   docker-compose start
   ```
 
-## 🧹 Nettoyer les conteneurs, images et volumes
+## Nettoyer les conteneurs, images et volumes
 
 Arrêter et supprimer uniquement les conteneurs :
   ```bash
@@ -119,7 +126,7 @@ Arrêter et supprimer uniquement les conteneurs :
 
 Supprimer les images Docker utilisées :
   ```bash
-  docker rmi movieapp-frontend movieapp-backend mariadb:11.8.2 adminer
+  docker rmi movieapp-frontend movieapp-backend movieapp-sentiment-analyzer mariadb:11.8.2 adminer
   ```
 
 Supprimer le volume de la base de données :

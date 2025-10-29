@@ -57,6 +57,17 @@ services:
     networks:
       - movieapp-network
 
+  sentiment-analyzer:
+    build:
+      context: git@github.com:messaoudRm/sentiment-analyzer.git#main
+      dockerfile: Dockerfile
+    container_name: movieapp-sentiment-analyzer
+    restart: always
+    ports:
+      - "8000:8000"
+    networks:
+      - movieapp-network
+
 volumes:
   movieapp-db-data:
 
