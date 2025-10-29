@@ -48,6 +48,8 @@ CREATE TABLE comments (
     movie_id INT,
     content TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    sentiment_label VARCHAR(20) DEFAULT NULL, -- 'positive', 'negative', 'neutral'
+    sentiment_score DECIMAL(5,4) DEFAULT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (movie_id) REFERENCES movies(id)
 );

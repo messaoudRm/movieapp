@@ -27,7 +27,7 @@ services:
 
   backend:
     build:
-      context: https://github.com/messaoudRm/movieapp-api.git#infraRefactor
+      context: https://github.com/messaoudRm/movieapp-api.git#branchB
       dockerfile: Dockerfile
     container_name: movieapp-backend
     restart: always
@@ -59,7 +59,7 @@ services:
 
   sentiment-analyzer:
     build:
-      context: git@github.com:messaoudRm/sentiment-analyzer.git#main
+      context: https://github.com/messaoudRm/sentiment-analyzer.git#main
       dockerfile: Dockerfile
     container_name: movieapp-sentiment-analyzer
     restart: always
