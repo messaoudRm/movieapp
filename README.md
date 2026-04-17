@@ -9,6 +9,7 @@ MovieApp projet d’orchestration qui regroupe l’ensemble des services de l’
   - **Adminer** : outil de gestion de la base accessible via navigateur.
 - **Monitoring (movieapp-monitoring)**: stack de monitoring basée sur Prometheus et Grafana : [doc monitoring](https://github.com/messaoudRm/movieapp-monitoring/blob/main/README.md)
 - **Sentiment Analyzer (sentiment-analyzer)** : microservice FastAPI dédié à l’analyse de sentiment des commentaires : [doc Sentiment-Analyzer](https://github.com/messaoudRm/sentiment-analyzer/blob/main/README.md)
+- **Event-Driven (Apache Kafka)** : communication asynchrone entre Spring Boot et FastAPI via un broker Kafka, avec supervision des topics via Provectus Kafka UI : [doc Kafka](https://github.com/messaoudRm/movieapp-kafka-event-driven/blob/main/README.md)
 
 ---
 ## Architecture :
@@ -39,21 +40,26 @@ flowchart TB
       direction TB
     end
 
+  %% --- Kafka ---
+    subgraph KafkaBroker["Apache Kafka (container)"]
+      direction TB
+    end
+
+  %% --- Zookeeper ---
+    subgraph Zookeeper["Zookeeper (container)"]
+      direction TB
+    end
+
   end
 
 
-%% ==== SECTION MANAGMENT ====
-  subgraph Adminer["Management Services"]
-    direction TB
-    adminer["Adminer UI (container)"]
-  end
-
-
-%% ==== SECTION MONITORING ====
-  subgraph Monitoring["Monitoring Services"]
+%% ==== SECTION MONITORING & MANAGEMENT ====
+  subgraph Monitoring["Monitoring & Management Services"]
     direction TB
     prometheus["Prometheus (container)"]
     grafana["Grafana (container)"]
+    kafkaui["Kafka UI (container)"]
+    adminer["Adminer UI (container)"]
   end
 
 
@@ -71,8 +77,11 @@ flowchart TB
   Database --> vol1
 
 
-%% ==== INTÉGRATION FASTAPI ====
-  SpringBootApp <-->|"HTTP"| FastAPI
+%% ==== INTÉGRATION KAFKA ====
+  Zookeeper -->|"Coordination"| KafkaBroker
+  SpringBootApp <-->|"Producer / Consumer"| KafkaBroker
+  FastAPI <-->|"Producer / Consumer"| KafkaBroker
+  kafkaui -->|"Supervision des topics"| KafkaBroker
 
 
 %% ==== FLUX MONITORING ====
