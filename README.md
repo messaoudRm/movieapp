@@ -3,13 +3,14 @@
 MovieApp projet d’orchestration qui regroupe l’ensemble des services de l’application (frontend, backend)
 
 
-- **Frontend (movieapp-ui)** : Angular + Angular Material, déployé avec Nginx : [doc frontend](https://github.com/messaoudRm/movieapp-ui/blob/main/README.md)
-- **Backend (movieapp-api)** : Spring Boot, exposant les services REST : [doc backend](https://github.com/messaoudRm/movieapp-api/blob/main/README.md)
+- **Frontend (movieapp-ui)** : Angular + Angular Material, déployé avec Nginx : [doc frontend](https://github.com/messaoudRm/movieapp-ui)
+- **Backend (movieapp-api)** : Spring Boot, exposant les services REST : [doc backend](https://github.com/messaoudRm/movieapp-api)
   - **Base de données** : MariaDB, initialisée automatiquement.
   - **Adminer** : outil de gestion de la base accessible via navigateur.
-- **Monitoring (movieapp-monitoring)**: stack de monitoring basée sur Prometheus et Grafana : [doc monitoring](https://github.com/messaoudRm/movieapp-monitoring/blob/main/README.md)
-- **Sentiment Analyzer (sentiment-analyzer)** : microservice FastAPI dédié à l’analyse de sentiment des commentaires : [doc Sentiment-Analyzer](https://github.com/messaoudRm/sentiment-analyzer/blob/main/README.md)
-
+- **Monitoring (movieapp-monitoring)**: stack de monitoring basée sur Prometheus et Grafana : [doc monitoring](https://github.com/messaoudRm/movieapp-monitoring)
+- **Sentiment Analyzer (movieapp-sentiment-analyzer)** : microservice FastAPI dédié à l’analyse de sentiment des commentaires : [doc Sentiment-Analyzer](https://github.com/messaoudRm/sentiment-analyzer)
+- **Vector Search (movieapp-vector-search)** : Moteur de recherche sémantique de films basé sur pgvector et FastAPI contenerisé en microservice : [doc Vector Search](https://github.com/messaoudRm/movieapp-vector-search)
+- **Selenium E2E Tests (movieapp-e2e)** : Tests E2E Selenium pour MovieApp : [doc movieapp-e2e](https://github.com/messaoudRm/movieapp-e2e)
 ---
 ## Architecture :
 ```mermaid
@@ -88,11 +89,6 @@ flowchart TB
 
 Assurez-vous d’avoir **Docker** installé, puis :
 
-**Créer le network Docker commun pour pouvoir connecter l’application et le monitoring**
-```bash
-docker network create movieapp-network
-```
-
 **Cloner le dépôt**
 ```bash
 git clone https://github.com/messaoudRm/movieapp.git
@@ -105,33 +101,8 @@ cd movieapp
 docker-compose up --build
 ```
 
-## Arrêter et relancer l'application
+## Supprimer les conteneurs, images et volumes
 
-Arrêter l'application :
   ```bash
-  Ctrl + C
+  docker-compose down --rmi all -v 
   ```
-
-Relancer les conteneurs déjà créés :
-  ```bash
-  docker-compose start
-  ```
-
-## Nettoyer les conteneurs, images et volumes
-
-Arrêter et supprimer uniquement les conteneurs :
-  ```bash
-  docker-compose down
-  ```
-
-Supprimer les images Docker utilisées :
-  ```bash
-  docker rmi movieapp-frontend movieapp-backend movieapp-sentiment-analyzer mariadb:11.8.2 adminer
-  ```
-
-Supprimer le volume de la base de données :
-  ```bash
-  docker volume rm movieapp_movieapp-db-data
-  ```
-
-
