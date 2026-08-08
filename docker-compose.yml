@@ -45,7 +45,7 @@ services:
 
   frontend:
     build:
-      context: https://github.com/messaoudRm/movieapp-ui.git#main
+      context: https://github.com/messaoudRm/movieapp-ui.git#feature/dev
       dockerfile: Dockerfile
       args:
         build_env: production
